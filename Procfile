@@ -1,1 +1,1 @@
-web: gunicorn market_sim.wsgi --log-file -
+web: gunicorn ping_pong.wsgi --log-file -
