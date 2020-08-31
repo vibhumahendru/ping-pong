@@ -48,14 +48,32 @@ class ScoreViewset(viewsets.ViewSet):
         return Response(score, status=status.HTTP_200_OK)
 
     def get_graph_data(self, request, *args, **kwargs):
+        result = {}
         vibhu_games_graph = []
         dad_games_graph = []
 
+        vibhu_points_graph =[]
+        dad_points_graph =[]
+
         for session in Session.objects.all():
-            vib_dp = []
-            dad_dp = []
+            #SESSION
             vibhu_games_won_by_session = Game.objects.filter(session=session, vibhu_score__gte=F('dad_score')).count()
             dad_games_won_by_session = Game.objects.filter(session=session, dad_score__gte=F('vibhu_score')).count()
 
-            print(vibhu_games_won_by_session, "vibhu_games_won_by_session")
-            print(dad_games_won_by_session, "dad_games_won_by_session")
+            vibhu_games_graph.append([session.date, vibhu_games_won_by_session])
+            dad_games_graph.append([session.date, dad_games_won_by_session])
+
+            #GAMES
+            vibhu_points_by_session = Game.objects.filter(session=session).aggregate(Sum('vibhu_score'))['vibhu_score__sum']
+            dad_points_by_session = Game.objects.filter(session=session).aggregate(Sum('dad_score'))['dad_score__sum']
+
+            vibhu_points_graph.append([session.date, vibhu_points_by_session])
+            dad_points_graph.append([session.date, dad_points_by_session])
+
+        result['vibhu_games_graph'] = vibhu_games_graph
+        result['dad_games_graph'] = dad_games_graph
+
+        result['vibhu_points_graph'] = vibhu_points_graph
+        result['dad_points_graph'] = dad_points_graph
+
+        return Response(result, status=status.HTTP_200_OK)
