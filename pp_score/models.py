@@ -16,7 +16,7 @@ class Session(models.Model):
 class Game(models.Model):
     vibhu_score = models.IntegerField(null=False, blank=True, default=0)
     dad_score = models.IntegerField(null=False, blank=True, default=0)
-    session = models.ForeignKey(Session, null=True, on_delete=models.SET_NULL, related_name='games')
+    session = models.ForeignKey(Session, default=None, null=False, on_delete=models.CASCADE, related_name='games')
 
     def save(self, *args, **kwargs):
         super(Game, self).save(*args, **kwargs)

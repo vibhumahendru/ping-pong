@@ -28,6 +28,7 @@ game_router = DefaultRouter()
 game_router.register(r'', GameViewset, basename='game')
 
 get_score = ScoreViewset.as_view({'get': 'get_score'})
+get_graph_data = ScoreViewset.as_view({'get': 'get_graph_data'})
 
 
 urlpatterns = [
@@ -35,4 +36,5 @@ urlpatterns = [
     url(r'^session/', include(session_router.urls)),
     url(r'^game/', include(game_router.urls)),
     path('get_score/', get_score, name='get_score' ),
+    path('get_graph_data/', get_graph_data, name='get_graph_data' ),
 ]

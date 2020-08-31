@@ -46,3 +46,16 @@ class ScoreViewset(viewsets.ViewSet):
         score['total_dad_points'] = total_dad_points
 
         return Response(score, status=status.HTTP_200_OK)
+
+    def get_graph_data(self, request, *args, **kwargs):
+        vibhu_games_graph = []
+        dad_games_graph = []
+
+        for session in Session.objects.all():
+            vib_dp = []
+            dad_dp = []
+            vibhu_games_won_by_session = Game.objects.filter(session=session, vibhu_score__gte=F('dad_score')).count()
+            dad_games_won_by_session = Game.objects.filter(session=session, dad_score__gte=F('vibhu_score')).count()
+
+            print(vibhu_games_won_by_session, "vibhu_games_won_by_session")
+            print(dad_games_won_by_session, "dad_games_won_by_session")
