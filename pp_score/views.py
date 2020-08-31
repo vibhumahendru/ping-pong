@@ -3,7 +3,7 @@ from .serializers import SessionSerializer, GameSerializer
 from .models import Session, Game
 from rest_framework import status
 from rest_framework.response import Response
-from django.db.models import F
+from django.db.models import F, Sum
 
 
 class SessionViewset(viewsets.ModelViewSet):
@@ -34,11 +34,15 @@ class ScoreViewset(viewsets.ViewSet):
         vibhu_game_wins = Game.objects.filter(vibhu_score__gte=F('dad_score')).count()
         dad_game_wins = Game.objects.filter(dad_score__gte=F('vibhu_score')).count()
 
+        total_vibhu_points = Game.objects.aggregate(Sum('vibhu_score'))['vibhu_score__sum']
+        total_dad_points = Game.objects.aggregate(Sum('dad_score'))['dad_score__sum']
 
         score['vibhu_session_wins'] = vibhu_session_wins
         score['dad_session_wins'] = dad_session_wins
         score['draw_session'] = draw_session
         score['vibhu_game_wins'] = vibhu_game_wins
         score['dad_game_wins'] = dad_game_wins
+        score['total_vibhu_points'] = total_vibhu_points
+        score['total_dad_points'] = total_dad_points
 
         return Response(score, status=status.HTTP_200_OK)
