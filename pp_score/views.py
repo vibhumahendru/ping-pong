@@ -8,20 +8,29 @@ from django.db.models import F, Sum
 
 class SessionViewset(viewsets.ModelViewSet):
     serializer_class = SessionSerializer
-    # filter_backends = [DjangoFilterBackend]
-    # filter_fields = ['sell_date', 'buy_date']
+    http_method_names = ['get','post']
 
     def get_queryset(self):
         return Session.objects.all()
 
 class GameViewset(viewsets.ModelViewSet):
     serializer_class = GameSerializer
-    # filter_backends = [DjangoFilterBackend]
-    # filter_fields = ['sell_date', 'buy_date']
+    http_method_names = ['get','post']
 
     def get_queryset(self):
         return Game.objects.all()
 
+    def create(self, request, *args, **kwargs):
+        key = self.request.GET.get('apiKey','')
+
+        if key == 'vibz1!':
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        else:
+            return Response({"not":"allowed"}, status=status.HTTP_401_UNAUTHORIZED)
 class ScoreViewset(viewsets.ViewSet):
 
     def get_score(self, request, *args, **kwargs):
