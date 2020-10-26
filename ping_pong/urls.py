@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from pp_score.views import SessionViewset, GameViewset, ScoreViewset
+from pp_score.views import *
 from rest_framework.routers import DefaultRouter
 from django.conf.urls import url, include
 
@@ -30,6 +30,7 @@ game_router.register(r'', GameViewset, basename='game')
 get_score = ScoreViewset.as_view({'get': 'get_score'})
 get_graph_data = ScoreViewset.as_view({'get': 'get_graph_data'})
 
+get_current_session = ScoreInputViewSet.as_view({'get': 'get_current_session'})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,4 +38,5 @@ urlpatterns = [
     url(r'^game/', include(game_router.urls)),
     path('get_score/', get_score, name='get_score' ),
     path('get_graph_data/', get_graph_data, name='get_graph_data' ),
+    path('get_current_session/', get_current_session, name='get_current_session' ),
 ]
